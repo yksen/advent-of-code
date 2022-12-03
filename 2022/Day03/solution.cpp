@@ -3,8 +3,11 @@
 #include <vector>
 #include <sstream>
 
+const size_t GROUP_SIZE = 3;
+
 struct Rucksack
 {
+    std::string content;
     std::pair<std::string, std::string> compartments;
 };
 
@@ -19,6 +22,7 @@ std::vector<Rucksack> parseRucksacksFromFile(const std::string &filename)
     {
         Rucksack rucksack;
         size_t halfOfItems = line.size() / 2;
+        rucksack.content = line;
         rucksack.compartments.first = line.substr(0, halfOfItems);
         rucksack.compartments.second = line.substr(halfOfItems, halfOfItems);
         rucksacks.push_back(rucksack);
@@ -34,7 +38,16 @@ char getItemAppearingInBothCompartments(const Rucksack &rucksack)
     return ' ';
 }
 
-uint64_t sumPrioritiesOfItems(const std::vector<char> &items)
+std::vector<char> getItemsAppearingInTwoRucksacks(const std::pair<Rucksack, Rucksack> &rucksacks)
+{
+    std::vector<char> items;
+    for (char item : rucksacks.first.content)
+        if (rucksacks.second.content.find(item) != std::string::npos)
+            items.push_back(item);
+    return items;
+}
+
+uint64_t sumItemPriorities(const std::vector<char> &items)
 {
     uint64_t sum = 0;
     for (char item : items)
@@ -50,7 +63,23 @@ uint64_t partOne(const std::vector<Rucksack> &rucksacks)
     std::vector<char> items;
     for (const Rucksack &rucksack : rucksacks)
         items.push_back(getItemAppearingInBothCompartments(rucksack));
-    return sumPrioritiesOfItems(items);
+    return sumItemPriorities(items);
+}
+
+uint64_t partTwo(const std::vector<Rucksack> &rucksacks)
+{
+    std::vector<char> items;
+    for (size_t index = 0; index < rucksacks.size(); index += GROUP_SIZE)
+    {
+        auto sameItemsInTwoRucksacks = getItemsAppearingInTwoRucksacks({rucksacks[index], rucksacks[index + 1]});
+        for (auto item : sameItemsInTwoRucksacks)
+            if (rucksacks[index + 2].content.find(item) != std::string::npos)
+            {
+                items.push_back(item);
+                break;
+            }
+    }
+    return sumItemPriorities(items);
 }
 
 int main()
@@ -58,6 +87,7 @@ int main()
     auto rucksacks = parseRucksacksFromFile("input.txt");
 
     std::cout << partOne(rucksacks) << std::endl;
+    std::cout << partTwo(rucksacks) << std::endl;
 
     return 0;
 }
