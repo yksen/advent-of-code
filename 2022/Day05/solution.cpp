@@ -74,17 +74,34 @@ std::vector<ProcedureStep> parseProcedureFromLines(const std::vector<std::string
     return procedure;
 }
 
-void applyProcedureToStacks(std::vector<std::stack<char>> &stacks, const std::vector<ProcedureStep> &procedure)
+void applyProcedureToStacks(std::vector<std::stack<char>> &stacks, const std::vector<ProcedureStep> &procedure, bool moveMultiple)
 {
     for (auto &step : procedure)
     {
         std::stack<char> &from_stack = stacks[step.from - 1];
         std::stack<char> &to_stack = stacks[step.to - 1];
 
-        for (size_t i = 0; i < step.amount; ++i)
+        if (moveMultiple)
         {
-            to_stack.push(from_stack.top());
-            from_stack.pop();
+            std::stack<char> temp_stack;
+            for (size_t i = 0; i < step.amount; ++i)
+            {
+                temp_stack.push(from_stack.top());
+                from_stack.pop();
+            }
+            while (!temp_stack.empty())
+            {
+                to_stack.push(temp_stack.top());
+                temp_stack.pop();
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < step.amount; ++i)
+            {
+                to_stack.push(from_stack.top());
+                from_stack.pop();
+            }
         }
     }
 }
@@ -101,7 +118,15 @@ std::string partOne(const std::vector<std::string> &lines)
 {
     auto stacks = parseStacksFromLines(lines);
     auto procedure = parseProcedureFromLines(lines);
-    applyProcedureToStacks(stacks, procedure);
+    applyProcedureToStacks(stacks, procedure, false);
+    return getTopValuesAsString(stacks);
+}
+
+std::string partTwo(const std::vector<std::string> &lines)
+{
+    auto stacks = parseStacksFromLines(lines);
+    auto procedure = parseProcedureFromLines(lines);
+    applyProcedureToStacks(stacks, procedure, true);
     return getTopValuesAsString(stacks);
 }
 
@@ -110,6 +135,7 @@ int main()
     auto lines = parseLinesFromFile("input.txt");
 
     std::cout << partOne(lines) << std::endl;
+    std::cout << partTwo(lines) << std::endl;
 
     return 0;
 }
