@@ -32,7 +32,7 @@ fn get_end_index_of_first_various_substring(message: String, substring_length: u
             set.insert(ch);
         }
 
-        if set.len() == 4 {
+        if set.len() == substring_length {
             return index + substring_length;
         }
     }
