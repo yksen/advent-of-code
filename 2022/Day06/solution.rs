@@ -9,10 +9,17 @@ fn main() {
     let input = get_input(file_path);
 
     println!("{}", part_one(&input));
+    println!("{}", part_two(&input));
 }
 
 fn part_one(input: &Vec<String>) -> usize {
     let start_marker_length = 4;
+    let message = input[0].clone();
+    return get_end_index_of_first_various_substring(message, start_marker_length);
+}
+
+fn part_two(input: &Vec<String>) -> usize {
+    let start_marker_length = 14;
     let message = input[0].clone();
     return get_end_index_of_first_various_substring(message, start_marker_length);
 }
