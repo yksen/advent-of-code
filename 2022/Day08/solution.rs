@@ -54,3 +54,51 @@ fn part_one(map: &Vec<Vec<u8>>) -> usize {
     }
     visible_trees
 }
+
+fn part_two(map: &Vec<Vec<u8>>) -> usize {
+    let mut highest_scenic_score = 1;
+
+    for y in 0..map.len() {
+        for x in 0..map.len() {
+            let mut up = 0;
+            let mut down = 0;
+            let mut left = 0;
+            let mut right = 0;
+
+            for i in (0..y).rev() {
+                up += 1;
+                if map[i][x] >= map[y][x] {
+                    break;
+                }
+            }
+
+            for i in y + 1..map.len() {
+                down += 1;
+                if map[i][x] >= map[y][x] {
+                    break;
+                }
+            }
+
+            for i in (0..x).rev() {
+                left += 1;
+                if map[y][i] >= map[y][x] {
+                    break;
+                }
+            }
+
+            for i in x + 1..map.len() {
+                right += 1;
+                if map[y][i] >= map[y][x] {
+                    break;
+                }
+            }
+
+            let scenic_score = up * down * left * right;
+
+            if scenic_score > highest_scenic_score {
+                highest_scenic_score = scenic_score;
+            }
+        }
+    }
+    highest_scenic_score
+}
