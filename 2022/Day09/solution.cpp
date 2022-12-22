@@ -15,16 +15,17 @@ std::vector<std::string> getInput(std::string file_path)
     return input;
 }
 
-size_t getTailVisitedPositionsCount(std::vector<std::string> input)
+size_t getVisitedPositionsCount(std::vector<std::string> input)
 {
     const int MAX_ROPE_RANGE = 1;
+    const size_t KNOT_COUNT = 10;
     std::map<char, std::pair<int, int>> movement{
         {'U', {0, 1}},
         {'D', {0, -1}},
         {'R', {1, 0}},
         {'L', {-1, 0}}};
-    std::pair<int, int> head{0, 0}, tail{0, 0};
-    std::set<std::pair<int, int>> visited_positions{tail};
+    std::vector<std::pair<int, int>> knots(KNOT_COUNT, {0, 0});
+    std::set<std::pair<int, int>> visited_positions{knots.back()};
 
     for (auto line : input)
     {
@@ -35,21 +36,42 @@ size_t getTailVisitedPositionsCount(std::vector<std::string> input)
 
         for (size_t step = 0; step < distance; ++step)
         {
-            head.first += movement[direction].first;
-            head.second += movement[direction].second;
-
-            if (std::abs(head.first - tail.first) > MAX_ROPE_RANGE ||
-                std::abs(head.second - tail.second) > MAX_ROPE_RANGE)
+            knots.front().first += movement[direction].first;
+            knots.front().second += movement[direction].second;
+            for (size_t index = 0; index < knots.size() - 1; ++index)
             {
-                tail.first += movement[direction].first;
-                tail.second += movement[direction].second;
-                if (direction == 'D' || direction == 'U')
-                    tail.first = head.first;
-                else
-                    tail.second = head.second;
-            }
+                int x = knots[index].first - knots[index + 1].first;
+                int y = knots[index].second - knots[index + 1].second;
 
-            visited_positions.insert(tail);
+                if (std::abs(x) > MAX_ROPE_RANGE ||
+                    std::abs(y) > MAX_ROPE_RANGE)
+                {
+                    if (std::abs(x) == std::abs(y))
+                    {
+                        knots[index + 1].first += (x > 0 ? 1 : -1);
+                        knots[index + 1].second += (y > 0 ? 1 : -1);
+                    }
+                    else if (std::abs(x) > 0 && std::abs(y) > 0)
+                    {
+                        if (std::abs(x) > MAX_ROPE_RANGE)
+                        {
+                            knots[index + 1].first += (x > 0 ? 1 : -1);
+                            knots[index + 1].second = knots[index].second;
+                        }
+                        else if (std::abs(y) > MAX_ROPE_RANGE)
+                        {
+                            knots[index + 1].second += (y > 0 ? 1 : -1);
+                            knots[index + 1].first = knots[index].first;
+                        }
+                    }
+                    else
+                    {
+                        knots[index + 1].first += x / 2;
+                        knots[index + 1].second += y / 2;
+                    }
+                }
+            }
+            visited_positions.insert(knots.back());
         }
     }
     return visited_positions.size();
@@ -58,5 +80,5 @@ size_t getTailVisitedPositionsCount(std::vector<std::string> input)
 int main()
 {
     auto input = getInput("input.txt");
-    std::cout << getTailVisitedPositionsCount(input) << std::endl;
+    std::cout << getVisitedPositionsCount(input) << std::endl;
 }
