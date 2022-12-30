@@ -3,10 +3,10 @@ use std::{
     io::{BufRead, BufReader},
 };
 fn main() {
-    part_one("input.txt");
+    solve_puzzle("input.txt");
 }
 
-fn part_one(file_path: &str) {
+fn solve_puzzle(file_path: &str) {
     let file = File::open(file_path).unwrap();
     let reader = BufReader::new(file);
     let mut instructions: Vec<i32> = Vec::new();
@@ -21,25 +21,43 @@ fn part_one(file_path: &str) {
         }
     }
 
-    let mut current_cycle: i32 = 1;
+    let max_cycles = 6 * 40;
+    let mut current_cycle: i32 = 0;
+    let mut i = 0;
     let mut register: i32 = 1;
     let mut sum: i32 = 0;
-    let mut i = 0;
-    while i < instructions.len() {
-        if instructions[i] == 0 {
-            current_cycle += 1;
-        } else {
-            current_cycle += 1;
-            if (20 + current_cycle) % 40 == 0 {
-                sum += register * current_cycle;
-            }
-            current_cycle += 1;
-            register += instructions[i];
+    while current_cycle < max_cycles {
+        print_pixel(register, current_cycle);
+
+        if (21 + current_cycle) % 40 == 0 {
+            sum += register * (current_cycle + 1);
         }
-        if (20 + current_cycle) % 40 == 0 {
-            sum += register * current_cycle;
+
+        current_cycle += 1;
+        if instructions[i] != 0 {
+            print_pixel(register, current_cycle);
+            if (21 + current_cycle) % 40 == 0 {
+                sum += register * (current_cycle + 1);
+            }
+            if current_cycle % 40 == 0 {
+                println!();
+            }
+            register += instructions[i];
+            current_cycle += 1;
         }
         i += 1;
+
+        if current_cycle % 40 == 0 {
+            println!();
+        }
     }
     println!("{}", sum)
+}
+
+fn print_pixel(register: i32, current_cycle: i32) {
+    if (current_cycle % 40 - register).abs() <= 1 {
+        print!("#");
+    } else {
+        print!(".");
+    }
 }
