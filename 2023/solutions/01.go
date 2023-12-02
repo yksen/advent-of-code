@@ -1,8 +1,7 @@
-package main
+package solutions
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -64,9 +63,8 @@ func parseNumber(line string) int {
 	return leftmost.Digit*10 + rightmost.Digit
 }
 
-func main() {
-
-	file, err := os.Open("2023/01")
+func Day01() int {
+	file, err := os.Open("input/01")
 	check(err)
 	defer file.Close()
 
@@ -77,5 +75,5 @@ func main() {
 		total += parseNumber(line)
 	}
 
-	fmt.Println(total)
+	return total
 }
