@@ -1,9 +1,7 @@
 package solutions
 
 import (
-	"bufio"
 	"log"
-	"os"
 	"strings"
 )
 
@@ -63,17 +61,10 @@ func parseNumber(line string) int {
 	return leftmost.Digit*10 + rightmost.Digit
 }
 
-func Day01() int {
-	file, err := os.Open("input/01")
-	check(err)
-	defer file.Close()
-
+func Day01(input []string) int {
 	total := 0
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
+	for _, line := range input {
 		total += parseNumber(line)
 	}
-
 	return total
 }

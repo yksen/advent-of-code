@@ -1,8 +1,6 @@
 package solutions
 
 import (
-	"bufio"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -65,21 +63,14 @@ func getPower(str string) int {
 	return product
 }
 
-func Day02() (int, int) {
-	file, err := os.Open("input/02")
-	check(err)
-	defer file.Close()
-
+func Day02(input []string) (int, int) {
 	total, power := 0, 0
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
+	for _, line := range input {
 		game := line[strings.Index(line, ":")+1:]
 		if isPossible(game) {
 			total += getId(line)
 		}
 		power += getPower(game)
 	}
-
 	return total, power
 }
