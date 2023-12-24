@@ -16,7 +16,7 @@ func check(err error) {
 }
 
 func main() {
-	file, err := os.Open("input/07")
+	file, err := os.Open("input/08")
 	check(err)
 	defer file.Close()
 
@@ -26,5 +26,5 @@ func main() {
 		lines = append(lines, scanner.Text())
 	}
 
-	fmt.Println(solutions.Day07(lines))
+	fmt.Println(solutions.Day08(lines))
 }
