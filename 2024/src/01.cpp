@@ -4,7 +4,7 @@
 #include <map>
 
 int main() {
-  auto [a, b]{aoc::parse_input_tuple<int, int>()};
+  auto [a, b]{aoc::parse_columns<int, int>()};
   std::sort(a.begin(), a.end());
   std::sort(b.begin(), b.end());
 

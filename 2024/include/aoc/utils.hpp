@@ -1,6 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <iostream>
+#include <print>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -9,33 +11,48 @@
 
 namespace aoc {
 
-template <size_t Index = 0, typename... Args>
-void parse_tuple(std::stringstream &stream, std::tuple<Args...> &tuple) {
-  if constexpr (Index < sizeof...(Args)) {
-    stream >> std::get<Index>(tuple);
-    parse_tuple<Index + 1, Args...>(stream, tuple);
+template <typename InputIterator, typename Predicate>
+auto find_all(InputIterator first, InputIterator last, Predicate pred) {
+  std::vector<InputIterator> result;
+  while ((first = std::find_if(first, last, pred)) != last) {
+    result.push_back(first);
+    ++first;
   }
+  return result;
 }
 
-template <typename... Args>
-std::vector<std::tuple<Args...>> parse_input_vector() {
-  std::vector<std::tuple<Args...>> result;
+template <typename Type>
+auto sign(const Type val) {
+  return (val > Type{0}) - (val < Type{0});
+}
+
+template <typename Type>
+auto format_vector(const std::vector<Type> &v) {
+  std::string res{};
+  for (auto x : v) res += std::to_string(x) + " ";
+  res.resize(res.size() - 1);
+  return std::format("{}", res);
+}
+
+template <typename Type>
+std::vector<std::vector<Type>> parse_rows() {
+  std::vector<std::vector<Type>> result;
   std::string line;
   while (std::getline(std::cin, line) && !line.empty()) {
+    result.emplace_back();
     std::stringstream stream{line};
-    std::tuple<Args...> item;
-    parse_tuple(stream, item);
-    result.push_back(item);
+    Type var;
+    while (stream >> var) {
+      result.back().emplace_back(var);
+    }
   }
   return result;
 }
 
 template <typename Tuple, size_t... Indices>
-void parse_vectors_tuple(Tuple &result, std::stringstream &stream,
-                         std::index_sequence<Indices...>) {
+void parse_vectors_tuple(Tuple &result, std::stringstream &stream, std::index_sequence<Indices...>) {
   (([&]() {
-     using ElementType =
-         typename std::tuple_element<Indices, Tuple>::type::value_type;
+     using ElementType = typename std::tuple_element<Indices, Tuple>::type::value_type;
      ElementType value;
      if (stream >> value) {
        std::get<Indices>(result).push_back(value);
@@ -45,7 +62,7 @@ void parse_vectors_tuple(Tuple &result, std::stringstream &stream,
 }
 
 template <typename... Args>
-std::tuple<std::vector<Args>...> parse_input_tuple() {
+std::tuple<std::vector<Args>...> parse_columns() {
   std::tuple<std::vector<Args>...> result;
   std::string line;
   while (std::getline(std::cin, line) && !line.empty()) {
@@ -55,4 +72,4 @@ std::tuple<std::vector<Args>...> parse_input_tuple() {
   return result;
 }
 
-} // namespace aoc
+}  // namespace aoc
