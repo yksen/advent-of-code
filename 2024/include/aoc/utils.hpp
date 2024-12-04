@@ -5,11 +5,22 @@
 #include <print>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <utility>
 #include <vector>
 
 namespace aoc {
+
+inline auto find_all_substr(const std::string_view input, const std::string_view substr) {
+  std::vector<size_t> indices;
+  size_t index{input.find(substr, 0)};
+  while (index != std::string::npos) {
+    indices.push_back(index);
+    index = input.find(substr, index + 1);
+  }
+  return indices;
+}
 
 template <typename InputIterator, typename Predicate>
 auto find_all(InputIterator first, InputIterator last, Predicate pred) {
