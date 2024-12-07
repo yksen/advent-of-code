@@ -2,7 +2,7 @@
 #include <print>
 
 int main(int argc, char** argv) {
-  auto input{aoc::fetch_input(argv[0])};
+  auto input{aoc::fetch_input(argc, argv)};
   std::string line{};
   while (input >> line) std::print("{}\n", line);
 }

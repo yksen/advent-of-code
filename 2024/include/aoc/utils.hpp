@@ -1,13 +1,9 @@
 #pragma once
 
 #include <algorithm>
-#include <iostream>
 #include <print>
-#include <sstream>
 #include <string>
 #include <string_view>
-#include <tuple>
-#include <utility>
 #include <vector>
 
 namespace aoc {
@@ -43,44 +39,6 @@ auto format_vector(const std::vector<Type> &v) {
   for (auto x : v) res += std::to_string(x) + " ";
   res.resize(res.size() - 1);
   return std::format("{}", res);
-}
-
-template <typename Type>
-std::vector<std::vector<Type>> parse_rows() {
-  std::vector<std::vector<Type>> result;
-  std::string line;
-  while (std::getline(std::cin, line) && !line.empty()) {
-    result.emplace_back();
-    std::stringstream stream{line};
-    Type var;
-    while (stream >> var) {
-      result.back().emplace_back(var);
-    }
-  }
-  return result;
-}
-
-template <typename Tuple, size_t... Indices>
-void parse_vectors_tuple(Tuple &result, std::stringstream &stream, std::index_sequence<Indices...>) {
-  (([&]() {
-     using ElementType = typename std::tuple_element<Indices, Tuple>::type::value_type;
-     ElementType value;
-     if (stream >> value) {
-       std::get<Indices>(result).push_back(value);
-     }
-   }()),
-   ...);
-}
-
-template <typename... Args>
-std::tuple<std::vector<Args>...> parse_columns() {
-  std::tuple<std::vector<Args>...> result;
-  std::string line;
-  while (std::getline(std::cin, line) && !line.empty()) {
-    std::stringstream stream{line};
-    parse_vectors_tuple(result, stream, std::index_sequence_for<Args...>{});
-  }
-  return result;
 }
 
 }  // namespace aoc

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <aoc/utils.hpp>
+#include <iostream>
 #include <print>
 #include <regex>
 #include <sstream>

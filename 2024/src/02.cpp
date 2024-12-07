@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <aoc/input.hpp>
 #include <aoc/utils.hpp>
 #include <format>
 #include <numeric>

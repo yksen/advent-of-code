@@ -1,3 +1,4 @@
+#include <aoc/input.hpp>
 #include <aoc/utils.hpp>
 #include <print>
 #include <string>
