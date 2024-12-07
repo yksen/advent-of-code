@@ -13,11 +13,12 @@
 
 namespace aoc {
 
-inline std::stringstream fetch_input(int argc, char **argv) {
+inline std::vector<std::string> fetch_input(int argc, char **argv) {
+  std::vector<std::string> result;
+  std::string line;
   if (argc >= 2) {
-    std::stringstream input;
-    input << std::cin.rdbuf();
-    return input;
+    while (std::getline(std::cin, line) && !line.empty()) result.emplace_back(line);
+    return result;
   }
   if (argc == 0) throw std::range_error{"No executable name argument provided"};
   std::stringstream path_stream{std::filesystem::path{argv[0]}.filename().string()};
@@ -40,9 +41,8 @@ inline std::stringstream fetch_input(int argc, char **argv) {
   std::ifstream file{output_path};
   if (!file) throw std::runtime_error{"Failed to open the input file"};
 
-  std::stringstream input;
-  input << file.rdbuf();
-  return input;
+  while (std::getline(file, line)) result.emplace_back(line);
+  return result;
 }
 
 template <typename Type>
