@@ -8,6 +8,10 @@
 
 namespace aoc {
 
+inline bool out_of_bounds(int x, int y, size_t w, size_t h) {
+  return x < 0 || y < 0 || x >= w || y >= h;
+};
+
 inline auto find_all_substr(const std::string_view input, const std::string_view substr) {
   std::vector<size_t> indices;
   size_t index{input.find(substr, 0)};
