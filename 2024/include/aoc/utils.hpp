@@ -3,11 +3,20 @@
 #include <algorithm>
 #include <array>
 #include <print>
+#include <regex>
 #include <string>
 #include <string_view>
 #include <vector>
 
 namespace aoc {
+
+inline auto get_numbers(std::string input) {
+  std::vector<int64_t> numbers;
+  std::regex pattern{"\\d+"};
+  for (std::sregex_iterator it{input.begin(), input.end(), pattern}, end{}; it != end; ++it)
+    numbers.emplace_back(std::stoll(it->str()));
+  return numbers;
+}
 
 const std::array<std::pair<int, int>, 4> directions{{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}};
 

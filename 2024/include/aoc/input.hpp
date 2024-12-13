@@ -17,7 +17,7 @@ inline std::vector<std::string> fetch_input(int argc, char **argv) {
   std::vector<std::string> result;
   std::string line;
   if (argc >= 2) {
-    while (std::getline(std::cin, line) && !line.empty()) result.emplace_back(line);
+    while (!std::getline(std::cin, line).eof()) result.emplace_back(line);
     return result;
   }
   if (argc == 0) throw std::range_error{"No executable name argument provided"};
