@@ -12,7 +12,7 @@ namespace aoc {
 
 inline auto get_numbers(std::string input) {
   std::vector<int64_t> numbers;
-  std::regex pattern{"\\d+"};
+  std::regex pattern{R"(-?\d+)"};
   for (std::sregex_iterator it{input.begin(), input.end(), pattern}, end{}; it != end; ++it)
     numbers.emplace_back(std::stoll(it->str()));
   return numbers;
