@@ -10,7 +10,7 @@
 using Vertex = std::tuple<std::pair<int, int>, std::pair<int, int>, int>;
 
 const char start{'S'}, end{'E'}, wall{'#'};
-const int step_cost{1}, rotation_cost{1000};
+const int step_cost{1}, rotation_cost{100};
 
 int main(int argc, char** argv) {
   auto input{aoc::fetch_input(argc, argv)};
@@ -37,9 +37,10 @@ int main(int argc, char** argv) {
       std::pair<int, int> new_pos{pos.first + dir.first, pos.second + dir.second};
       if (input[new_pos.second][new_pos.first] == wall) continue;
       int new_weight{step_cost + ((rot != dir) ? rotation_cost : 0)};
-      if (!distance.contains(new_pos) || distance[new_pos] >= distance[pos] + new_weight ||
-          distance[new_pos] == distance[pos] - rotation_cost + step_cost)
+      if (!distance.contains(new_pos) || distance[new_pos] > distance[pos] + new_weight ||
+          distance[new_pos] == distance[pos] - rotation_cost + step_cost) {
         parents[new_pos].emplace(pos);
+      }
       if (!distance.contains(new_pos) || distance[new_pos] > distance[pos] + new_weight) {
         distance[new_pos] = distance[pos] + new_weight;
         q.emplace(new_pos, dir, distance[new_pos]);
@@ -55,6 +56,7 @@ int main(int argc, char** argv) {
   std::vector<std::pair<int, int>> best_tiles;
   std::queue<std::pair<int, int>> s;
   s.emplace(end_pos);
+  int prev{distance[end_pos]};
   while (!s.empty()) {
     auto pos{s.front()};
     s.pop();
@@ -65,20 +67,14 @@ int main(int argc, char** argv) {
           (distance[parent] < distance[pos] || distance[parent] - distance[pos] == rotation_cost - step_cost))
         s.emplace(parent);
   }
-
-  for (auto [pos, w] : distance) std::println("({}, {}): {}", pos.first, pos.second, w);
-  for (auto [pos, ps] : parents) {
-    std::print("({}, {}):", pos.first, pos.second);
-    for (auto parent : ps) std::print(" ({}, {}) ", parent.first, parent.second);
+  for (int y{(int)input.size() / 5 * 4}; y < input.size(); ++y) {
+    for (int x{(int)input.front().size() / 5 * 3}; x < input.front().size(); ++x) {
+      std::print("\t{}",
+                 (std::find(best_tiles.begin(), best_tiles.end(), std::pair{x, y}) != best_tiles.end())
+                     ? std::to_string(distance[{x, y}])
+                     : std::string{input[y][x]});
+    }
     std::println();
-  }
-  for (auto [x, y] : best_tiles) std::print(" ({}, {})", x, y);
-
-  auto map{input};
-  for (auto [x, y] : best_tiles) map[y][x] = 'O';
-  for (auto line : map) {
-    std::replace(line.begin(), line.end(), '.', ' ');
-    std::println("{}", line);
   }
 
   std::println("{} {}", distance[end_pos], best_tiles.size());
