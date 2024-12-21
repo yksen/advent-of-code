@@ -8,6 +8,16 @@
 #include <string_view>
 #include <vector>
 
+template <typename T>
+std::pair<T, T> operator+(const std::pair<T, T>& l, const std::pair<T, T>& r) {
+  return {l.first + r.first, l.second + r.second};
+}
+
+template <typename T>
+std::pair<T, T> operator-(const std::pair<T, T>& l, const std::pair<T, T>& r) {
+  return {l.first - r.first, l.second - r.second};
+}
+
 namespace aoc {
 
 inline auto get_numbers(std::string input) {
@@ -48,7 +58,7 @@ auto sign(const Type val) {
 }
 
 template <typename Type>
-auto format_vector(const std::vector<Type> &v) {
+auto format_vector(const std::vector<Type>& v) {
   std::string res{};
   for (auto x : v) res += std::to_string(x) + " ";
   res.resize(res.size() - 1);
